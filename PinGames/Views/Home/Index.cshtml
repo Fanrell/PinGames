@@ -1,8 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-}
+    ViewData["Title"] = "PinGame - Login";
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+}
+<div class="align-content-center">
+    <div class="align-bottom">
+        <form method="get">
+            <p><input type="text" placeholder="Login" /></p>
+            <p><input type="password" placeholder="Password" /></p>
+            <p><input type="checkbox" />Remember login</p>
+            <p>
+                <input type="button" value="Login" class="btn btn-primary btn-dark p-2" onclick="window.location.href = '@Url.Action("LoginAction", "Home")';"/>
+                <input type="button" value="Register" class="btn btn-secondary btn-light p-2" onclick="window.location.href = '@Url.Action("RegisterAction","Home")';" />
+            </p>
+            <p>
+                <a href="">Login Problem</a>
+            </p>
+        </form>
+    </div>
 </div>
