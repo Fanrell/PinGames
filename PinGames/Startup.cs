@@ -4,10 +4,15 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using PinGames.Data;
+
 
 namespace PinGames
 {
@@ -25,6 +30,16 @@ namespace PinGames
         {
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddDbContextPool<ApplicationDbContext>(
+                           dbContextOptions => dbContextOptions
+                               .UseMySql(
+                                    Configuration.GetConnectionString("LocalHost"),
+                                   new MariaDbServerVersion(new Version(10, 4, 16)), // use MariaDbServerVersion for MariaDB
+                                   mySqlOptions => mySqlOptions
+                                       .CharSetBehavior(CharSetBehavior.NeverAppend))
+                               // Everything from this point on is optional but helps with debugging.
+                               .EnableSensitiveDataLogging()
+                               .EnableDetailedErrors());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
