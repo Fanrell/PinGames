@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 using PinGames.Models;
 using PinGames.Data;
+using static PinGames.Static.PasswordValid;
+using Microsoft.EntityFrameworkCore;
 
 namespace PinGames.Controllers
 {
@@ -48,14 +51,21 @@ namespace PinGames.Controllers
             return View("Register");
         }
         [HttpPost]
+        /*
+         * To Do:
+         *  -Password without banned charactes
+         */
         public async Task<IActionResult> RegisterAction(RegisterUserModel model)
         {
-            if(model.Password.Length >= 8 && model.RepeatedPassword == model.Password)
+            var anotherUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == model.Login || x.Email == model.Email);
+            if (anotherUser == null)
             {
                 UserAccountModel newUser = new UserAccountModel {
-                    Id = Guid.NewGuid().GetHashCode(),
+                    Id = Math.Abs(Guid.NewGuid().GetHashCode()),
                     UserName = model.Login,
-                    Password = model.Password,
+                    Password = Convert.ToBase64String(
+                        System.Text.Encoding.UTF8.GetBytes(model.Password)
+                        ),
                     Email = model.Email,
                     AdminPrivilage = model.AdminPrivilage ?? false
                 };
@@ -67,5 +77,6 @@ namespace PinGames.Controllers
             return View("Privacy");
             
         }
+
     }
 }
