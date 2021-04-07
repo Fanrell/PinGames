@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +11,10 @@ using System.Linq.Expressions;
 using PinGames.Models;
 using PinGames.Data;
 using static PinGames.Static.PasswordValid;
-using Microsoft.EntityFrameworkCore;
+using static PinGames.Static.SessionController;
+using static PinGames.Static.Base64;
+using System.Text.Json;
+
 
 namespace PinGames.Controllers
 {
@@ -25,9 +30,13 @@ namespace PinGames.Controllers
             _logger = logger;
             _db = db;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
+            if (SessionExists(HttpContext, "LoginSession"))
+            {
+                return RedirectToAction("RegisterAction");
+            }
             return View();
         }
 
@@ -41,10 +50,18 @@ namespace PinGames.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpGet]
-        public IActionResult LoginAction()
+        [HttpPost]
+        public async Task<IActionResult> Index(UserLoginModel model)
         {
-            return View("Privacy");
+            var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
+            if (existingUser != null && Decode(existingUser.Password) == model.Password)
+            {
+                HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize("added"));
+                
+                return RedirectToAction("Privacy");
+            }
+            else
+                return View("");
         }
         public IActionResult RegisterAction()
         {
