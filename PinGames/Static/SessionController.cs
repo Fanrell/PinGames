@@ -20,5 +20,11 @@ namespace PinGames.Static
                 httpContext.Session.GetString(sessionName)
                 );
         }
+
+        internal static string ReadUserNameFromSession(HttpContext httpContext, string sessionName)
+        {
+            var user = httpContext.Session.GetString(sessionName);
+            return JsonSerializer.Deserialize<string>(user);
+        }
     }
 }

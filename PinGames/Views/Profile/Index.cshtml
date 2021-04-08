@@ -1,0 +1,14 @@
+﻿@model PinGames.Models.UserAccountModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div>
+    @if(Model != null)
+    {
+        <p>Login: @Model.UserName</p>
+        <p>Email: @Model.Email</p>
+        <p>Admin?: @Model.AdminPrivilage</p>
+    }
+</div>

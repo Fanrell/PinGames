@@ -8,12 +8,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Text.Json;
 using PinGames.Models;
 using PinGames.Data;
 using static PinGames.Static.PasswordValid;
 using static PinGames.Static.SessionController;
 using static PinGames.Static.Base64;
-using System.Text.Json;
+
 
 
 namespace PinGames.Controllers
@@ -35,7 +36,7 @@ namespace PinGames.Controllers
         {
             if (SessionExists(HttpContext, "LoginSession"))
             {
-                return RedirectToAction("RegisterAction");
+                return RedirectToRoute("Profile", new { userName = ReadUserNameFromSession(HttpContext, "LoginSession")});
             }
             return View();
         }
@@ -56,9 +57,9 @@ namespace PinGames.Controllers
             var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
             if (existingUser != null && Decode(existingUser.Password) == model.Password)
             {
-                HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize("added"));
+                HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(model.Login));
                 
-                return RedirectToAction("Privacy");
+                return RedirectToRoute("Profile", new { userName = model.Login});
             }
             else
                 return View("");
