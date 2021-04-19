@@ -11,13 +11,20 @@ namespace PinGames.Models
         [Key]
         public int Id { get; set; }
         [Required]
+        [MaxLength(20)]
+        [Display(Name = "Login")]
         public string UserName { get; set; }
         [Required]
+        [MaxLength(60)]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
+        [MaxLength(32)]
         public string Password { get; set; }
-        [Required]
         public bool AdminPrivilage { get; set; }
-        public string ImageName { get; set; }
+        [DisplayFormat(NullDisplayText = "default")]
+        [Display(Name = "Profile Picture")]
+#nullable enable
+        public string? ImageName { get; set; }
     }
 }

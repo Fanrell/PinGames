@@ -37,7 +37,6 @@ namespace PinGames
                            dbContextOptions => dbContextOptions
                                .UseMySql(
                                     Configuration.GetConnectionString("LocalHost"),
-                                   new MariaDbServerVersion(new Version(10, 4, 16)), // use MariaDbServerVersion for MariaDB
                                    mySqlOptions => mySqlOptions
                                        .CharSetBehavior(CharSetBehavior.NeverAppend))
                                // Everything from this point on is optional but helps with debugging.

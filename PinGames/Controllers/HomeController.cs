@@ -46,6 +46,15 @@ namespace PinGames.Controllers
             return View();
         }
 
+        public IActionResult LogoutAction()
+        {
+            if(SessionExists(HttpContext, "LoginSession"))
+            {
+                HttpContext.Session.Remove("LoginSession");
+            }
+            return RedirectToAction("Index");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -57,9 +66,9 @@ namespace PinGames.Controllers
             var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
             if (existingUser != null && Decode(existingUser.Password) == model.Password)
             {
-                HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(model.Login));
+                HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(existingUser.UserName));
                 
-                return RedirectToRoute("Profile", new { userName = model.Login});
+                return RedirectToRoute("Profile", new { userName = existingUser.UserName});
             }
             else
                 return View("");

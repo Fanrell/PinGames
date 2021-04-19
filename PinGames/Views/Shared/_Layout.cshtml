@@ -28,13 +28,13 @@
                         @if (Context.Session.GetString("LoginSession") != null)
                         {
                             <li class="nav-item">
-                                <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Logout</a>
+                                <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
                             </li>
                         }
                         else
                         {
                         <li class="nav-item">
-                            <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Login</a>
+                            <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Login</a>
                         </li>
                         }
                     </ul>

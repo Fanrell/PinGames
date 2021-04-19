@@ -12,5 +12,6 @@ namespace PinGames.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
         public virtual DbSet<UserAccountModel> Users { get; set; }
+        public virtual DbSet<GameModel> Games { get; set; }
     }
 }
