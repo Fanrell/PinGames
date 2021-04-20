@@ -8,8 +8,8 @@ using PinGames.Data;
 namespace PinGames.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210419112007_Users_Games")]
-    partial class Users_Games
+    [Migration("20210420101933_reviews")]
+    partial class reviews
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace PinGames.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Genere")
+                    b.Property<string>("Genre")
                         .IsRequired()
                         .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
@@ -37,6 +37,32 @@ namespace PinGames.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("PinGames.Models.ReviewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("varchar(400)")
+                        .HasMaxLength(400);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("PinGames.Models.UserAccountModel", b =>
@@ -54,7 +80,8 @@ namespace PinGames.Migrations
                         .HasMaxLength(60);
 
                     b.Property<string>("ImageName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -69,6 +96,21 @@ namespace PinGames.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PinGames.Models.ReviewModel", b =>
+                {
+                    b.HasOne("PinGames.Models.GameModel", "Game")
+                        .WithMany("Reviews")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PinGames.Models.UserAccountModel", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

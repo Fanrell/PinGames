@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PinGames.Models
 {
@@ -17,6 +18,7 @@ namespace PinGames.Models
         [Required]
         [MaxLength(20)]
         public string Genre { get; set; }
+        public List<ReviewModel> Reviews { get; set; }
 
     }
 }

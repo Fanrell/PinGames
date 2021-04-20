@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,9 +23,13 @@ namespace PinGames.Models
         [MaxLength(32)]
         public string Password { get; set; }
         public bool AdminPrivilage { get; set; }
+        public List<ReviewModel> Reviews { get; set; }
+
+
+#nullable enable
         [DisplayFormat(NullDisplayText = "default")]
         [Display(Name = "Profile Picture")]
-#nullable enable
+        [MaxLength(100)]
         public string? ImageName { get; set; }
     }
 }
