@@ -6,10 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20210420095949_reviews.cs" />
-    <Compile Remove="Migrations\20210420095949_reviews.Designer.cs" />
-    <Compile Remove="Migrations\20210420101607_reviews.cs" />
-    <Compile Remove="Migrations\20210420101607_reviews.Designer.cs" />
+    <Compile Remove="Migrations\20210425155231_LibraryModel.cs" />
+    <Compile Remove="Migrations\20210425155231_LibraryModel.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

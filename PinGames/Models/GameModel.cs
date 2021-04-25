@@ -15,10 +15,9 @@ namespace PinGames.Models
         [Required]
         [MaxLength(60)]
         public string Name { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string Genre { get; set; }
+        public GenreModel Genre { get; set; }
         public List<ReviewModel> Reviews { get; set; }
+        public List<LibraryModel> Libraries { get; set; }
 
     }
 }

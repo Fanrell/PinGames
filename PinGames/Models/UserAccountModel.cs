@@ -24,6 +24,7 @@ namespace PinGames.Models
         public string Password { get; set; }
         public bool AdminPrivilage { get; set; }
         public List<ReviewModel> Reviews { get; set; }
+        public List<LibraryModel> Libraries { get; set; }
 
 
 #nullable enable
