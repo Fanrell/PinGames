@@ -27,15 +27,23 @@
                         </li>
                         @if (Context.Session.GetString("LoginSession") != null)
                         {
-                            <li class="nav-item">
-                                <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
+                            <li class=" nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" ng-href="#">
+                                    @Context.Session.GetString("LoginSession").Replace(@"""", "")
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userName="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a></li>
+                                    <li class="dropdown-divider"></li>
+                                    <li><a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a></li>
+                                </ul>
                             </li>
+
                         }
                         else
                         {
-                        <li class="nav-item">
-                            <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Login</a>
-                        </li>
+                            <li class="nav-item">
+                                <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
                         }
                     </ul>
                 </div>

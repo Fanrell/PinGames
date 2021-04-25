@@ -31,13 +31,18 @@ namespace PinGames.Controllers
             _logger = logger;
             _db = db;
         }
-        [HttpGet]
-        public IActionResult Index()
+        public IActionResult Login()
         {
             if (SessionExists(HttpContext, "LoginSession"))
             {
-                return RedirectToRoute("Profile", new { userName = ReadUserNameFromSession(HttpContext, "LoginSession")});
+                return RedirectToRoute("Profile", new { userName = ReadUserNameFromSession(HttpContext, "LoginSession") });
             }
+            return View();
+        }
+
+        //[HttpGet]
+        public IActionResult Index()
+        {
             return View();
         }
 
@@ -61,7 +66,7 @@ namespace PinGames.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         [HttpPost]
-        public async Task<IActionResult> Index(UserLoginModel model)
+        public async Task<IActionResult> Login(UserLoginModel model)
         {
             var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
             if (existingUser != null && Decode(existingUser.Password) == model.Password)
@@ -71,7 +76,7 @@ namespace PinGames.Controllers
                 return RedirectToRoute("Profile", new { userName = existingUser.UserName});
             }
             else
-                return View("");
+                return View();
         }
         public IActionResult RegisterAction()
         {
@@ -99,7 +104,7 @@ namespace PinGames.Controllers
 
                 await _db.AddAsync<UserAccountModel>(newUser);
                 await _db.SaveChangesAsync();
-                return View("Index");
+                return View("Login");
             }
             return View("Privacy");
             
