@@ -73,11 +73,11 @@ namespace PinGames.Controllers
             {
                 HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(existingUser.UserName));
                 
-                return RedirectToRoute("Profile", new { userName = existingUser.UserName});
+                return View("Index");
             }
             else
                 return View();
-        }
+    }
         public IActionResult RegisterAction()
         {
             return View("Register");

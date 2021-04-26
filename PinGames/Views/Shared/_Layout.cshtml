@@ -32,10 +32,18 @@
                                     @Context.Session.GetString("LoginSession").Replace(@"""", "")
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userName="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a></li>
+                                    <li>
+                                        <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userName="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a>
+                                        </li>
+                                    <li>
+                                        <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
+                                    </li>
                                     <li class="dropdown-divider"></li>
-                                    <li><a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a></li>
+                                    <li>
+                                        <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
+                                    </li>
                                 </ul>
+
                             </li>
 
                         }

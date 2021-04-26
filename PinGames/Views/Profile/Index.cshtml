@@ -1,4 +1,5 @@
-﻿@model PinGames.Models.UserAccountModel
+﻿@using PinGames.Data
+@model PinGames.Models.UserAccountModel
 
 @{
     ViewData["Title"] = "Profile";
@@ -7,8 +8,7 @@
 <div>
     @if(Model != null)
     {
-        <p>Login: @Model.UserName</p>
-        <p>Email: @Model.Email</p>
-        <p>Admin?: @Model.AdminPrivilage</p>
+        <p>@Model.UserName</p>
+        <p>@Model.Libraries</p>
     }
 </div>

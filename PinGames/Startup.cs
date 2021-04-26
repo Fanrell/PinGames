@@ -69,13 +69,11 @@ namespace PinGames
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "profile",
-                    pattern: "profile/{*userName}",
-                    defaults: new {controller = "Profile", action = "index"}
-                    );
-                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapControllerRoute(
+                    name: "profile",
+                    pattern: "profile/{action=Index}/{userName?}");
             });
         }
     }

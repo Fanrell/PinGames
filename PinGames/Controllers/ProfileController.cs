@@ -15,15 +15,24 @@ namespace PinGames.Controllers
     {
         private readonly ILogger<ProfileController> _logger;
         private readonly ApplicationDbContext _db;
+        public LibraryModel library = new LibraryModel();
         public ProfileController(ILogger<ProfileController> logger, ApplicationDbContext db)
         {
             _logger = logger;
             _db = db;
         }
+        [HttpGet]
         public async Task<IActionResult> Index(string userName)
         {
-            var profile = await _db.Users.FirstOrDefaultAsync(user => user.UserName == userName);
-            return View(profile);
+            Console.WriteLine(userName);
+            var user = await _db.Users.FirstOrDefaultAsync(user => user.UserName == userName);
+            return View(user);
+        }
+
+        public async Task<IActionResult> AddGamesToDatabase()
+        {
+
+            return View();
         }
     }
 }
