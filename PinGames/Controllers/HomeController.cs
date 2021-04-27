@@ -73,7 +73,8 @@ namespace PinGames.Controllers
             {
                 HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(existingUser.UserName));
                 
-                return View("Index");
+                return RedirectToActionPermanent("index", "profile" , model.Login);
+;
             }
             else
                 return View();
