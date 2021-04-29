@@ -23,7 +23,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a id="Find Game" class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Find Game</a>
                         </li>
                         @if (Context.Session.GetString("LoginSession") != null)
                         {
@@ -33,8 +33,8 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userName="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a>
-                                        </li>
+                                        <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-login="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a>
+                                    </li>
                                     <li>
                                         <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
                                     </li>

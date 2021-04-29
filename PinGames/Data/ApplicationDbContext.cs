@@ -13,7 +13,6 @@ namespace PinGames.Data
         { }
         public virtual DbSet<UserAccountModel> Users { get; set; }
         public virtual DbSet<GameModel> Games { get; set; }
-        public virtual DbSet<ReviewModel> Reviews { get; set; }
         public virtual DbSet<GenreModel> Genres { get; set; }
         public virtual DbSet<LibraryModel> Libraries { get; set; }
     }

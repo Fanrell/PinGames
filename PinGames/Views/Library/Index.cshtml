@@ -1,0 +1,31 @@
+﻿@model  PinGames.Models.GameLibraryModel
+<h1>Library</h1>
+<div>
+    <form>
+        <input type="text" placeholder="Search" />
+        <div class="m-3">
+            @foreach (var item in Model.Genres)
+            {
+                <input class=" text-dark" type="checkbox" value="@item" /> @item
+            }
+        </div>
+        <button type="submit" class="btn-sm btn btn-dark">Confirm</button>
+    </form>
+    <table class="table">
+        <tr class="">
+            <td><h5>Cover</h5></td>
+            <td><h5>Name</h5></td>
+            <td><h5>Genre</h5></td>
+            <td><h5>About</h5></td>
+        </tr>
+        <tr>
+            @foreach(var item in Model.Games)
+            {
+                <td><img src="~/img/Game/default.jpg"  class="w-50 h-50"> </td>
+                <td>@item.Name</td>
+                <td>@item.Genre.GenreName</td>
+                <td>@item.About.Substring(0,200)</td>
+            }
+        </tr>
+    </table>
+</div>

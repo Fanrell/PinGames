@@ -22,17 +22,16 @@ namespace PinGames.Controllers
             _db = db;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(string userName)
+        public async Task<IActionResult> Index(string login)
         {
-            Console.WriteLine(userName);
-            var user = await _db.Users.FirstOrDefaultAsync(user => user.UserName == userName);
+            var user = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
             return View(user);
         }
 
-        public async Task<IActionResult> AddGamesToDatabase()
+/*        public async Task<IActionResult> AddGamesToDatabase()
         {
 
             return View();
-        }
+        }*/
     }
 }

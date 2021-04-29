@@ -14,5 +14,6 @@ namespace PinGames.Models
         public UserAccountModel User { get; set; }
         [Required]
         public GameModel Game { get; set; }
+        public string Review { get; set; }
     }
 }

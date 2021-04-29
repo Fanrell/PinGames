@@ -23,7 +23,6 @@ namespace PinGames.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
-        public IEnumerable<UserAccountModel> Users { get; set; }
 
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
@@ -72,8 +71,8 @@ namespace PinGames.Controllers
             if (existingUser != null && Decode(existingUser.Password) == model.Password)
             {
                 HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(existingUser.UserName));
-                
-                return RedirectToActionPermanent("index", "profile" , model.Login);
+
+                return RedirectToAction("index", "profile", new { login = ReadUserNameFromSession(HttpContext, "LoginSession") });
 ;
             }
             else

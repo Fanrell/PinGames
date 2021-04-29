@@ -22,8 +22,8 @@ namespace PinGames.Models
         [Required]
         [MaxLength(32)]
         public string Password { get; set; }
+        public string About { get; set; }
         public bool AdminPrivilage { get; set; }
-        public List<ReviewModel> Reviews { get; set; }
         public List<LibraryModel> Libraries { get; set; }
 
 
