@@ -24,10 +24,6 @@ namespace PinGames.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string login)
         {
-            /*            var lib = _db.Libraries
-                            .FromSqlRaw(
-                            "SELECT libraries.*, users.UserName, users.About as userInfo, users.ImageName, games.Name, games.About FROM `libraries` join users join games"
-                            ).Select(b => b).ToList();*/
             var userDB = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
 
             var lib = (
