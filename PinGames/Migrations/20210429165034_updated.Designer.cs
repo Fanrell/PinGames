@@ -8,7 +8,7 @@ using PinGames.Data;
 namespace PinGames.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210429152923_updated")]
+    [Migration("20210429165034_updated")]
     partial class updated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,11 +32,6 @@ namespace PinGames.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(60)")
-                        .HasMaxLength(60);
-
-                    b.Property<string>("Producer")
                         .IsRequired()
                         .HasColumnType("varchar(60)")
                         .HasMaxLength(60);

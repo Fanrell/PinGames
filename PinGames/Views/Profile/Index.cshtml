@@ -1,14 +1,50 @@
 ﻿@using PinGames.Data
-@model PinGames.Models.UserAccountModel
+@using PinGames.Models
 
 @{
     ViewData["Title"] = "Profile";
 }
 
-<div>
-    @if(Model != null)
-    {
-        <p>@Model.UserName</p>
-        <p>@Model.Libraries</p>
+<div class="position-relative pb-5">
+    @{
+        var profile = ViewData["userProfile"] as ProfileModel;
     }
+    @if (profile != null)
+    {
+        <table>
+            <tr>
+
+                <td style="width:30%">
+                    <img class="img-frame img-thumbnail" src="~/img/Profile/default.png" />
+                </td>
+
+                <td>
+                    <h3>@profile.UserName</h3>
+                    <h6>@profile.UserAbout</h6>
+                </td>
+            </tr>
+        </table>
+
+        <div>
+            <table class="table" style="width:100%">
+                <tr class="">
+                    <td class="w-25"><h5>Cover</h5></td>
+                    <td><h5>Name</h5></td>
+                    <td><h5>About</h5></td>
+                    <td><h5>Review</h5></td>
+                </tr>
+                <tr>
+                    <td class=""><img src="~/img/Game/default.jpg" class="w-25 h-auto"> </td>
+                    <td>@profile.GameName</td>
+                    <td>@profile.GameAbout.Substring(0, 200)  ...</td>
+                    <td>@profile.GameAbout.Substring(0, 200)  ...</td>
+
+
+                </tr>
+            </table>
+        </div>
+    }
+</div>
+<div class="position-relative m-3 ">
+   
 </div>

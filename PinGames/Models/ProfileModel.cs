@@ -5,7 +5,23 @@ namespace PinGames.Models
 {
 public class ProfileModel
     {
-        public UserAccountModel User { get; set; }
-        public List<LibraryModel> Games {get; set;}
+        private string _userImg;
+        private string _gameImg;
+
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string UserAbout { get; set; }
+        public string UserImg { 
+            get => _userImg; 
+            set => _userImg = value ?? "default.jpg"; 
+        }
+        public int GameId { get; set; }
+        public string GameName { get; set; }
+        public string GameImg { 
+            get => _gameImg;
+            set => _gameImg = value ?? "default.jpg"; 
+        }
+        public string GameAbout { get; set; }
     }
 }

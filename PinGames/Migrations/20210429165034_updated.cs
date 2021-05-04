@@ -45,7 +45,6 @@ namespace PinGames.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 60, nullable: false),
-                    Producer = table.Column<string>(maxLength: 60, nullable: false),
                     GenreId = table.Column<int>(nullable: false),
                     About = table.Column<string>(nullable: false)
                 },

@@ -16,9 +16,6 @@ namespace PinGames.Models
         [MaxLength(60)]
         public string Name { get; set; }
         [Required]
-        [MaxLength(60)]
-        public string Producer { get; set; }
-        [Required]
         public int GenreId { get; set; }
         [ForeignKey("GenreId")]
         public GenreModel Genre { get; set; }

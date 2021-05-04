@@ -34,11 +34,6 @@ namespace PinGames.Migrations
                         .HasColumnType("varchar(60)")
                         .HasMaxLength(60);
 
-                    b.Property<string>("Producer")
-                        .IsRequired()
-                        .HasColumnType("varchar(60)")
-                        .HasMaxLength(60);
-
                     b.HasKey("Id");
 
                     b.HasIndex("GenreId");

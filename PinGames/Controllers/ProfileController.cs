@@ -24,14 +24,35 @@ namespace PinGames.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string login)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
-            return View(user);
-        }
+            /*            var lib = _db.Libraries
+                            .FromSqlRaw(
+                            "SELECT libraries.*, users.UserName, users.About as userInfo, users.ImageName, games.Name, games.About FROM `libraries` join users join games"
+                            ).Select(b => b).ToList();*/
+            var userDB = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
 
-/*        public async Task<IActionResult> AddGamesToDatabase()
-        {
+            var lib = (
+                from library in _db.Libraries
+                where library.UserId == userDB.Id
+                join game in _db.Games on library.GameId equals game.Id
+                join user in _db.Users on library.UserId equals user.Id
+                select new ProfileModel
+                {
+                    Id = library.Id,
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    UserAbout = user.About,
+                    UserImg = user.ImageName,
+                    GameId = game.Id,
+                    GameName = game.Name,
+                    GameAbout = game.About
+                }
+                ).FirstOrDefault();
+
+            ViewData["userProfile"] = lib;
+
 
             return View();
-        }*/
+        }
+
     }
 }

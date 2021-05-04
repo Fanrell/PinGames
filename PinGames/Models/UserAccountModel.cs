@@ -25,6 +25,7 @@ namespace PinGames.Models
         public string About { get; set; }
         public bool AdminPrivilage { get; set; }
         public List<LibraryModel> Libraries { get; set; }
+        public List<GameModel> Games { get; set; }
 
 
 #nullable enable
