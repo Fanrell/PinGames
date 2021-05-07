@@ -4,23 +4,25 @@
 @{
     ViewData["Title"] = "Profile";
 }
-
+<head>
+    <script src="~/js/ReadMore.js"></script>
+</head>
 <div class="position-relative pb-5">
     @{
         var profile = ViewData["userProfile"] as ProfileModel;
     }
     @if (profile != null)
     {
-        <table>
+        <table style="margin-bottom: 10px">
             <tr>
 
                 <td style="width:30%">
-                    <img class="img-frame img-thumbnail" src="~/img/Profile/default.png" />
+                    <img class="img-frame img-thumbnail" style="border-radius: 50%"  src="~/img/Profile/default.png" />
                 </td>
 
                 <td>
                     <h3>@profile.UserName</h3>
-                    <h6>@profile.UserAbout</h6>
+                    <h6 class="p-2">@profile.UserAbout</h6>
                 </td>
             </tr>
         </table>
@@ -33,11 +35,21 @@
                     <td><h5>About</h5></td>
                     <td><h5>Review</h5></td>
                 </tr>
-                <tr>
+                <tr class="border-bottom">
                     <td class=""><img src="~/img/Game/default.jpg" class="w-25 h-auto"> </td>
                     <td>@profile.GameName</td>
-                    <td>@profile.GameAbout.Substring(0, 200)  ...</td>
-                    <td>@profile.GameAbout.Substring(0, 200)  ...</td>
+                    <td>
+                        <span>@profile.GameAbout.Substring(0, 200)</span>
+                        <span id="dots">
+                           ... <a href=".">More</a>
+                        </span>
+                    </td>
+                    <td>
+                        <span>@profile.GameAbout.Substring(0, 200)</span>
+                        <span id="dots">
+                            ... <a href=".">More</a>
+                            </span>
+                    </td>
 
 
                 </tr>

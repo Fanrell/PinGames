@@ -13,6 +13,7 @@ namespace PinGames.Controllers
     {
         private readonly ILogger<LibraryController> _logger;
         private readonly ApplicationDbContext _db;
+        public IEnumerable<GameLibraryModel> gameLibraries;
 
         public LibraryController(ILogger<LibraryController> logger, ApplicationDbContext db)
         {
@@ -21,14 +22,19 @@ namespace PinGames.Controllers
         }
         public IActionResult Index()
         {
-          GameLibraryModel gameLibrary = new GameLibraryModel();
-            gameLibrary.Genres = _db.Genres.Select(x => x.GenreName).ToList();
-            gameLibrary.Games = _db.Games.Select(x => x).ToList();
-            foreach(var game in gameLibrary.Games)
-            {
-                game.Genre = _db.Genres.FirstOrDefault(x => x.Id == game.GenreId);
-            }
-            return View(gameLibrary);
+            gameLibraries = (
+                from game in _db.Games
+                join genre in _db.Genres on game.GenreId equals genre.Id
+                select new GameLibraryModel
+                {
+                    GameId = game.Id,
+                    GameName = game.Name,
+                    GameAbout = game.About,
+                    GenreName = genre.GenreName
+                }
+                ).ToList();
+
+            return View(gameLibraries);
         }
     }
 }
