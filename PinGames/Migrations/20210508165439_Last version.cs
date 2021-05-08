@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PinGames.Migrations
 {
-    public partial class updated : Migration
+    public partial class Lastversion : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,8 +45,10 @@ namespace PinGames.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 60, nullable: false),
+                    GameImg = table.Column<string>(nullable: false),
                     GenreId = table.Column<int>(nullable: false),
-                    About = table.Column<string>(nullable: false)
+                    About = table.Column<string>(nullable: false),
+                    UserAccountModelId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,6 +59,12 @@ namespace PinGames.Migrations
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Games_Users_UserAccountModelId",
+                        column: x => x.UserAccountModelId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,6 +100,11 @@ namespace PinGames.Migrations
                 column: "GenreId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Games_UserAccountModelId",
+                table: "Games",
+                column: "UserAccountModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Libraries_GameId",
                 table: "Libraries",
                 column: "GameId");
@@ -111,10 +124,10 @@ namespace PinGames.Migrations
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "Users");
         }
     }
 }

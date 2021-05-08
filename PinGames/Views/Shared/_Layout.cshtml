@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,8 +9,9 @@
     <link rel="stylesheet" href="~/css/spanMoreRead.css" />
 </head>
 <body>
+    @{ var session = Context.Session.GetString("LoginSession"); }
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PinGames</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -23,56 +23,72 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a id="Find Game" class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Find Game</a>
-                        </li>
-                        @if (Context.Session.GetString("LoginSession") != null)
-                        {
-                            <li class=" nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" ng-href="#">
-                                    @Context.Session.GetString("LoginSession").Replace(@"""", "")
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-login="@Context.Session.GetString("LoginSession").Replace(@"""","")">Profile</a>
-                                    </li>
-                                    <li>
-                                        <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
-                                    </li>
+
+                        <li class="nav-link dropdown">
+                            <a class="nav-item dropdown-toggle" data-toggle="dropdown" ng-href="#">
+                                Games
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a id="Find Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="Index">Find Game</a>
+                                </li>
+                                @if (session!=null)
+                                {
                                     <li class="dropdown-divider"></li>
                                     <li>
-                                        <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
+                                        <a id="Add Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="AddGame">Add Game</a>
                                     </li>
+                                }
                                 </ul>
-
                             </li>
 
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
-                            </li>
-                        }
-                    </ul>
+                            @if (session != null)
+                            {
+                                <li class=" nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" ng-href="#">
+                                        @session.Replace(@"""", "")
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-login="@session.Replace(@"""","")">Profile</a>
+                                        </li>
+                                        <li>
+                                            <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
+                                        </li>
+                                        <li class="dropdown-divider"></li>
+                                        <li>
+                                            <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
+                                        </li>
+                                    </ul>
+
+                                </li>
+
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - PinGames - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </nav>
+        </header>
+        <div class="container" style="margin-top:75px">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2021 - PinGames - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
 </html>

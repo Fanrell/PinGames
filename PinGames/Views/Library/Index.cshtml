@@ -1,14 +1,9 @@
-﻿@model  IEnumerable<PinGames.Models.GameLibraryModel>
+﻿@model IEnumerable<PinGames.Models.GameLibraryModel>
 <h1>Library</h1>
 <div>
+    @{ var gameLibrary = ViewData["gameLibrary"] as List<GameLibraryModel>;}
     <form>
         <input type="text" placeholder="Search" />
-        <div class="m-3">
-@*            @foreach (var item in Model.Genres)
-            {
-                <input class=" text-dark" type="checkbox" value="@item" /> @item
-            }*@
-        </div>
         <button type="submit" class="btn-sm btn btn-dark">Confirm</button>
     </form>
     <table class="table">
@@ -17,15 +12,22 @@
             <td><h5>Name</h5></td>
             <td><h5>Genre</h5></td>
             <td><h5>About</h5></td>
+            <td></td>
         </tr>
-        <tr>
-            @foreach(var item in Model)
-            {
-                <td><img src="~/img/Game/default.jpg"  class="w-50 h-50"> </td>
+
+        @foreach (var item in gameLibrary)
+        {
+            <tr>
+                <td><img src="~/img/Game/@item.GameImg" class="w-50 h-50"> </td>
                 <td>@item.GameName</td>
                 <td>@item.GenreName</td>
-                <td>@item.GameAbout.Substring(0,200)</td>
-            }
-        </tr>
+                <td>@item.GameAbout.Substring(0, 200)</td>
+                @if (Context.Session.GetString("LoginSession") != null)
+                {
+                    <td><button class="btn btn-dark" asp-controller="Library" asp-action="">Add</button></td>
+                }
+            </tr>
+        }
+
     </table>
 </div>

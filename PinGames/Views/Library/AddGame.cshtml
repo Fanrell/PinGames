@@ -1,0 +1,23 @@
+﻿@model PinGames.Models.GameToUpload
+@{ 
+    ViewData["Title"] = "Add Game";
+}
+
+@{ var genres = ViewData["genres"] as List<GenreModel>;}
+
+<div>
+    <form class="align-content-center" method="post" action="AddGame" enctype="multipart/form-data">
+        <p><input type="text" id="name" name="name" placeholder="Game Name" /></p>
+        <p>
+            <select name="genreId">
+                @foreach (var item in genres)
+                {
+                    <option value="@item.Id">@item.GenreName</option>
+                }
+            </select>
+        </p>
+        <p><input name="GameImg" type="file" accept="image/*" /></p>
+        <p><textarea rows="10" cols="40" id="about" name="about" placeholder="About Game" /></textarea></p>
+        <input class="btn btn-info btn-primary" type="submit" value="Submit" />
+    </form>
+</div>

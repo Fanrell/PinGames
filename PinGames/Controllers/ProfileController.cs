@@ -24,29 +24,76 @@ namespace PinGames.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string login)
         {
-            var userDB = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
 
-            var lib = (
-                from library in _db.Libraries
-                where library.UserId == userDB.Id
-                join game in _db.Games on library.GameId equals game.Id
-                join user in _db.Users on library.UserId equals user.Id
+            var userDb = await
+                (
+                from user in _db.Users
+                where user.UserName == login
                 select new ProfileModel
                 {
-                    Id = library.Id,
                     UserId = user.Id,
-                    UserName = user.UserName,
                     UserAbout = user.About,
-                    UserImg = user.ImageName,
+                    UserName = user.UserName,
+                    UserImg = user.ImageName
+                }
+                ).AsNoTracking().FirstOrDefaultAsync();
+
+                var games = await
+                (
+                from library in _db.Libraries
+                where library.UserId == userDb.UserId
+                join game in _db.Games on library.GameId equals game.Id
+                select new gamesProfile
+                {
+                    gameId = game.Id,
+                    libId = library.Id,
+                    gameName = game.Name,
+                    gameAbout = game.About,
+                    gameReview = library.Review,
+                    GameImg = game.GameImg
+                }
+                ).ToListAsync();
+            userDb.gameProfiles = games;
+
+
+            ViewData["userProfile"] = userDb;
+
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Game(int GameId)
+        {
+            var rev = await (
+                from library in _db.Libraries
+                where library.GameId == GameId
+                join user in _db.Users on library.UserId equals user.Id
+                select new Reviews
+                {
+                    userName = user.UserName,
+                    review = library.Review
+
+                }
+                ).ToListAsync();
+
+            Console.WriteLine(GameId);
+            var gameView = await (
+                from game in _db.Games
+                where game.Id == GameId
+                join genre in _db.Genres on game.GenreId equals genre.Id
+                select new GameViewModel
+                {
                     GameId = game.Id,
                     GameName = game.Name,
-                    GameAbout = game.About
+                    GameAbout = game.About,
+                    GameImg = game.GameImg, // po zmianie modelu "GameModel" zmienić na pobranie wartości
+                    GenreName = genre.GenreName,
+                    Review = rev
                 }
-                ).FirstOrDefault();
+                ).AsNoTracking().FirstOrDefaultAsync();
 
-            ViewData["userProfile"] = lib;
-
-
+            ViewData["game"] = gameView;
             return View();
         }
 

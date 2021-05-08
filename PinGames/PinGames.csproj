@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\img\Game\" />
     <Folder Include="wwwroot\img\Profile\" />
   </ItemGroup>
 

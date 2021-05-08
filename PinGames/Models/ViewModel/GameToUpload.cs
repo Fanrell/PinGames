@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PinGames.Models
 {
-    public class GameModel
+    public class GameToUpload
     {
         [Key]
         [Required]
@@ -16,14 +17,9 @@ namespace PinGames.Models
         [MaxLength(60)]
         public string Name { get; set; }
         [Required]
-        public string GameImg { get; set; }
-        [Required]
         public int GenreId { get; set; }
-        [ForeignKey("GenreId")]
-        public GenreModel Genre { get; set; }
         [Required]
         public string About { get; set; }
-        public List<LibraryModel> Libraries { get; set; }
-
+        public IFormFile GameImg { get; set; } 
     }
 }

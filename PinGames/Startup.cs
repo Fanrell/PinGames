@@ -74,6 +74,9 @@ namespace PinGames
                     endpoints.MapControllerRoute(
                     name: "profile",
                     pattern: "{controller=profile}/{action=Index}/{login?}");
+                    endpoints.MapControllerRoute(
+                    name: "game",
+                    pattern: "{controller=profile}/{action=Game}/{gameId?}");
             });
         }
     }
