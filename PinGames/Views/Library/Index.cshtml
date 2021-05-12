@@ -1,7 +1,16 @@
 ﻿@model IEnumerable<PinGames.Models.GameLibraryModel>
 <h1>Library</h1>
 <div>
-    @{ var gameLibrary = ViewData["gameLibrary"] as List<GameLibraryModel>;}
+    @{
+        var gameLibrary = ViewData["gameLibrary"] as List<GameLibraryModel>;
+        var msg = ViewData["msg"] as string;
+        }
+    @if(msg != null)
+            {
+                <div>
+                    <p>@msg</p>
+                </div>
+            }
     <form>
         <input type="text" placeholder="Search" />
         <button type="submit" class="btn-sm btn btn-dark">Confirm</button>
@@ -19,12 +28,12 @@
         {
             <tr>
                 <td><img src="~/img/Game/@item.GameImg" class="w-50 h-50"> </td>
-                <td>@item.GameName</td>
+                <td><a class="text-dark" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.GameId">@item.GameName</a></td>
                 <td>@item.GenreName</td>
                 <td>@item.GameAbout.Substring(0, 200)</td>
                 @if (Context.Session.GetString("LoginSession") != null)
                 {
-                    <td><button class="btn btn-dark" asp-controller="Library" asp-action="">Add</button></td>
+                    <td><a class="btn btn-success text-center" style="border-radius:45%;" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@item.GameId">&#43</a></td>
                 }
             </tr>
         }

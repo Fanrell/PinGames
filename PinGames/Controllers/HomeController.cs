@@ -65,12 +65,14 @@ namespace PinGames.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Login(UserLoginModel model)
         {
             var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
             if (existingUser != null && Decode(existingUser.Password) == model.Password)
             {
                 HttpContext.Session.SetString("LoginSession", JsonSerializer.Serialize(existingUser.UserName));
+                HttpContext.Session.SetString("LoginSessionId", JsonSerializer.Serialize(existingUser.Id));
 
                 return RedirectToAction("index", "profile", new { login = ReadUserNameFromSession(HttpContext, "LoginSession") });
 ;
@@ -83,6 +85,7 @@ namespace PinGames.Controllers
             return View("Register");
         }
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         /*
          * To Do:
          *  -Password without banned charactes

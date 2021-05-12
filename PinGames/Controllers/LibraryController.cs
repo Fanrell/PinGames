@@ -9,6 +9,7 @@ using PinGames.Models;
 using Microsoft.EntityFrameworkCore;
 using static PinGames.Static.UploadFile;
 using Microsoft.AspNetCore.Hosting;
+using static PinGames.Static.SessionController;
 
 namespace PinGames.Controllers
 {
@@ -58,6 +59,7 @@ namespace PinGames.Controllers
             return View();
         }
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> AddGame(GameToUpload model)
         {
             string imgName = await UploadGameCover(_webHost, model);
@@ -71,6 +73,39 @@ namespace PinGames.Controllers
             };
             await _db.Games.AddAsync(gameToDb);
             await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GameToLibrary(int gameId)
+        {
+            int userId = ReadUserIdFromSession(HttpContext, "LoginSessionId");
+
+            if(userId >= 0)
+            {
+                var library = await (
+                    from lib in _db.Libraries
+                    where lib.UserId == userId
+                    join usr in _db.Users on lib.UserId equals usr.Id
+                    select new LibraryModel
+                    {
+                        Id = lib.Id,
+                        UserId = lib.UserId,
+                        GameId = lib.GameId
+                    }
+                    ).AsNoTracking().FirstOrDefaultAsync();
+
+                if (library == null)
+                {
+                    var gameToAdd = new LibraryModel
+                    {
+                        GameId = gameId,
+                        UserId = userId
+                    };
+                    await _db.Libraries.AddAsync(gameToAdd);
+                    await _db.SaveChangesAsync();
+                }
+
+            }
             return RedirectToAction("Index");
         }
     }

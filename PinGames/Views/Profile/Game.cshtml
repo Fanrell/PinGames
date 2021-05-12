@@ -19,6 +19,12 @@
                 <p class="p-1">@game.GameAbout</p>
             </td>
         </tr>
+        <tr>
+            @if (Context.Session.GetString("LoginSession") != null)
+            {
+                <td><a class="btn btn-success" style="border-radius:45%" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@game.GameId">&#43</a></td>
+            }
+        </tr>
     </table>
 
     <table class="col-12">

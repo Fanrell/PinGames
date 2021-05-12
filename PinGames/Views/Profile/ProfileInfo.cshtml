@@ -1,0 +1,20 @@
+﻿@model PinGames.Models.ProfileInfoModel
+@{
+    var user = ViewData["userInfo"] as UserAccountModel;
+}
+
+
+    <form class="col-10" method="post" action="ProfileInfo" enctype="multipart/form-data">
+        <img src="~/img/Profile/@user.ImageName" class="img-frame img-thumbnail w-25 align-content-lg-start p-2" style="border-radius: 50%" alt="profile" />
+        <table class="align-content-lg-end">
+            <tr><td>
+    <p>Login: <input type="text" placeholder="Nickname" name="userName" value="@user.UserName" /></p>
+    <p>Email: <input type="email" placeholder="email" name="email" value="@user.Email" /></p>
+        @*<td><input type="password" placeholder="" value="@user.Email" /></td>
+        <td><input type="password" placeholder="" value="@user.Email" /></td>*@
+    <p>About: </p><p><textarea cols="50" rows="25" name="about">@user.About</textarea></p>
+    <input type="file" name="profilePicture" accept="image/*" />
+    <input type="submit" class="btn btn-primary" value="Submit" />
+</td></tr>
+        </table>
+    </form>

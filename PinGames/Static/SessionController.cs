@@ -11,7 +11,7 @@ namespace PinGames.Static
     {
         internal static void AddToSession(HttpContext httpContext, string sessionName, string serializeDataToAdd)
         {
-            throw new NotImplementedException();
+            httpContext.Session.SetString(sessionName, JsonSerializer.Serialize(serializeDataToAdd));
         }
 
         internal static bool SessionExists(HttpContext httpContext, string sessionName)
@@ -25,6 +25,12 @@ namespace PinGames.Static
         {
             var user = httpContext.Session.GetString(sessionName);
             return JsonSerializer.Deserialize<string>(user);
+        }
+
+        internal static int ReadUserIdFromSession(HttpContext httpContext, string sessionName)
+        {
+            var user = httpContext.Session.GetString(sessionName);
+            return JsonSerializer.Deserialize<int>(user);
         }
     }
 }

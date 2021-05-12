@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PinGames.Models;
 using PinGames.Data;
+using static PinGames.Static.SessionController;
 
 
 namespace PinGames.Controllers
@@ -21,7 +22,7 @@ namespace PinGames.Controllers
             _logger = logger;
             _db = db;
         }
-        [HttpGet]
+        [HttpGet] // zabezpieczuć bo error bez id
         public async Task<IActionResult> Index(string login)
         {
 
@@ -38,21 +39,21 @@ namespace PinGames.Controllers
                 }
                 ).AsNoTracking().FirstOrDefaultAsync();
 
-                var games = await
-                (
-                from library in _db.Libraries
-                where library.UserId == userDb.UserId
-                join game in _db.Games on library.GameId equals game.Id
-                select new gamesProfile
-                {
-                    gameId = game.Id,
-                    libId = library.Id,
-                    gameName = game.Name,
-                    gameAbout = game.About,
-                    gameReview = library.Review,
-                    GameImg = game.GameImg
-                }
-                ).ToListAsync();
+            var games = await
+            (
+            from library in _db.Libraries
+            where library.UserId == userDb.UserId
+            join game in _db.Games on library.GameId equals game.Id
+            select new gamesProfile
+            {
+                gameId = game.Id,
+                libId = library.Id,
+                gameName = game.Name,
+                gameAbout = game.About,
+                gameReview = library.Review ?? "",
+                GameImg = game.GameImg
+            }
+            ).ToListAsync();
             userDb.gameProfiles = games;
 
 
@@ -96,6 +97,42 @@ namespace PinGames.Controllers
             ViewData["game"] = gameView;
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> ProfileInfo(string login)
+        {
+            var user = await
+                (
+                    from usr in _db.Users
+                    where usr.UserName == login
+                    select new UserAccountModel
+                    {
+                        UserName = usr.UserName,
+                        About = usr.About,
+                        Email = usr.Email,
+                        ImageName = usr.ImageName ?? "default.png"
+                    }
+                ).AsNoTracking().FirstOrDefaultAsync();
+            ViewData["userInfo"] = user;
+            return View();
+        }
 
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> ProfileInfo(ProfileInfoModel model)
+        {
+            var idFromSession = ReadUserIdFromSession(HttpContext, "LoginSessionId");
+            var login = ReadUserNameFromSession(HttpContext, "LoginSession");
+            var dataFromDb = await _db.Users.FirstOrDefaultAsync(user => user.Id == idFromSession);
+            if(login == dataFromDb.UserName)
+            {
+                dataFromDb.UserName = model.userName;
+                dataFromDb.Email = model.email;
+                dataFromDb.About = model.about;
+                _db.Users.Update(dataFromDb);
+                await _db.SaveChangesAsync();
+                AddToSession(HttpContext, "LoginSession", model.userName);
+            }
+            return RedirectToActionPermanent("index", new { login = dataFromDb.UserName });
+        }
     }
 }
