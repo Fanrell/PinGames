@@ -6,7 +6,7 @@
             <p><input name="password" type="password" placeholder="Password" /></p>
             <p><input id="rememberLogin" name="rememberLogin" type="checkbox" value="true" />Remember login</p>
             <p>
-                <input type="submit" value="Login" class="btn btn-primary btn-dark p-2" onclick="window.location.href = '@Url.Action("LoginAction", "Home")';" />
+                <input type="submit" value="Login" class="btn btn-primary btn-dark p-2" asp-area="" asp-action="Login" asp-controller="Login" />
                 <input type="button" value="Register" class="btn btn-secondary btn-light p-2" onclick="window.location.href = '@Url.Action("RegisterAction","Home")';" />
             </p>
             <p>

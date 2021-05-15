@@ -29,6 +29,13 @@ namespace PinGames
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSession();
+            services.AddAuthentication("CookieAuthentication")
+                .AddCookie("CookieAuthentication", config =>
+                {
+                    config.Cookie.Name = "UserLoginCookie";
+                    config.LoginPath = "/Login";
+                    config.AccessDeniedPath = "/Library";
+                });
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddControllersWithViews();
@@ -61,7 +68,7 @@ namespace PinGames
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             

@@ -8,9 +8,10 @@
 <div class="position-relative pb-5">
     @{
         var profile = ViewData["userProfile"] as ProfileModel;
-        var login = Context.Session.GetString("LoginSession").Replace(@"""", "");
+        var session = Context.Request.Cookies["UserLoginCookie"];
+        var user = Context.User.Identity.Name;
     }
-    @if (login != null)
+    @if (session != null)
     {
         <table style="margin-bottom: 10px">
             <tr>
@@ -23,7 +24,7 @@
                     <h3>@profile.UserName</h3>
                     <h6 class="p-2">@profile.UserAbout</h6>
                 </td>
-                @if (login == profile.UserName)
+                @if (user == profile.UserName)
                 {
                     <td><a class="btn btn-outline-dark btn" asp-area="" asp-controller="profile" asp-action="ProfileInfo" asp-route-login="@profile.UserName">Edit</a></td>
                 }

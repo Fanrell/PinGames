@@ -9,7 +9,10 @@
     <link rel="stylesheet" href="~/css/spanMoreRead.css" />
 </head>
 <body>
-    @{ var session = Context.Session.GetString("LoginSession"); }
+    @{ 
+        var session = Context.Request.Cookies["UserLoginCookie"];
+        var user = Context.User.Identity.Name;
+        }
     <header>
         <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -32,13 +35,10 @@
                                 <li>
                                     <a id="Find Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="Index">Find Game</a>
                                 </li>
-                                @if (session!=null)
-                                {
                                     <li class="dropdown-divider"></li>
                                     <li>
                                         <a id="Add Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="AddGame">Add Game</a>
                                     </li>
-                                }
                                 </ul>
                             </li>
 
@@ -46,18 +46,18 @@
                             {
                                 <li class=" nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" ng-href="#">
-                                        @session.Replace(@"""", "")
+                                        @user
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-login="@session.Replace(@"""","")">Profile</a>
+                                            <a id="profile" class="dropdown-item text-dark" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-login="@user">Profile</a>
                                         </li>
                                         <li>
                                             <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
                                         </li>
                                         <li class="dropdown-divider"></li>
                                         <li>
-                                            <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Home" asp-action="LogoutAction">Logout</a>
+                                            <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Login" asp-action="LogOut">Logout</a>
                                         </li>
                                     </ul>
 
@@ -67,7 +67,7 @@
                             else
                             {
                                 <li class="nav-item">
-                                    <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                                    <a id="logout" class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
                                 </li>
                             }
                         </ul>
@@ -81,7 +81,7 @@
             </main>
         </div>
 
-        <footer class="border-top footer text-muted">
+        <footer class="border-top position-absolute footer text-muted">
             <div class="container">
                 &copy; 2021 - PinGames - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>

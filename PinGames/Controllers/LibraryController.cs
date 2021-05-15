@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using static PinGames.Static.UploadFile;
 using Microsoft.AspNetCore.Hosting;
 using static PinGames.Static.SessionController;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PinGames.Controllers
 {
@@ -44,6 +45,7 @@ namespace PinGames.Controllers
 
             return View();
         }
+        [Authorize]
         public async Task<IActionResult> AddGame()
         {
             var genres = await
