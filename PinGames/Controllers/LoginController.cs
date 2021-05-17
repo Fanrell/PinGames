@@ -31,7 +31,6 @@ namespace PinGames.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Login(UserLoginModel model)
         {
             var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserName == model.Login || user.Email == model.Login);
@@ -40,6 +39,7 @@ namespace PinGames.Controllers
                 var userClaim = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, existingUser.UserName),
+                    new Claim(ClaimTypes.Sid, existingUser.Id.ToString())
                 };
                 if (existingUser.AdminPrivilage)
                     userClaim.Add(new Claim(ClaimTypes.Role, "Admin"));

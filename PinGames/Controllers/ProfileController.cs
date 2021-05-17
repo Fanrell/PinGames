@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 using PinGames.Models;
 using PinGames.Data;
 using static PinGames.Static.SessionController;
-
+using static PinGames.Static.UploadFile;
+using Microsoft.AspNetCore.Hosting;
 
 namespace PinGames.Controllers
 {
@@ -16,11 +17,13 @@ namespace PinGames.Controllers
     {
         private readonly ILogger<ProfileController> _logger;
         private readonly ApplicationDbContext _db;
+        private readonly IWebHostEnvironment _webHost;
         public LibraryModel library = new LibraryModel();
-        public ProfileController(ILogger<ProfileController> logger, ApplicationDbContext db)
+        public ProfileController(ILogger<ProfileController> logger, ApplicationDbContext db, IWebHostEnvironment webHost)
         {
             _logger = logger;
             _db = db;
+            _webHost = webHost;
         }
         [HttpGet] // zabezpieczuć bo error bez id
         public async Task<IActionResult> Index(string login)
@@ -35,7 +38,7 @@ namespace PinGames.Controllers
                     UserId = user.Id,
                     UserAbout = user.About,
                     UserName = user.UserName,
-                    UserImg = user.ImageName
+                    UserImg = user.ImageName ?? "default.png"
                 }
                 ).AsNoTracking().FirstOrDefaultAsync();
 
@@ -117,17 +120,17 @@ namespace PinGames.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ProfileInfo(ProfileInfoModel model)
         {
-            var idFromSession = ReadUserIdFromSession(HttpContext, "LoginSessionId");
-            var login = ReadUserNameFromSession(HttpContext, "LoginSession");
-            var dataFromDb = await _db.Users.FirstOrDefaultAsync(user => user.Id == idFromSession);
-            if(login == dataFromDb.UserName)
+            var login = HttpContext.User.Identity.Name;
+            var dataFromDb = await _db.Users.FirstOrDefaultAsync(user => user.UserName == login);
+            if (dataFromDb != null)
             {
+                string imgName = await UploadProfileImg(_webHost, model);
                 dataFromDb.UserName = model.userName;
                 dataFromDb.Email = model.email;
                 dataFromDb.About = model.about;
+                dataFromDb.ImageName = imgName;
                 _db.Users.Update(dataFromDb);
                 await _db.SaveChangesAsync();
                 AddToSession(HttpContext, "LoginSession", model.userName);
