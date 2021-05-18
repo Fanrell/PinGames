@@ -39,9 +39,12 @@ namespace PinGames.Controllers
             return View();
         }
 
-        //[HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var games = await _db.Games
+                .OrderByDescending(g => g.Id)
+                .Take(8).AsNoTracking().ToListAsync();
+            ViewData["gameList"] = games;
             return View();
         }
 

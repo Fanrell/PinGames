@@ -1,8 +1,31 @@
-﻿@model PinGames.Models.UserLoginModel
+﻿@*@model PinGames.Models.UserLoginModel*@
 @{
-    ViewData["Title"] = "PinGame - Login";
-
+    ViewData["Title"] = "PinGame";
+    var gameList =  ViewData["gameList"] as List<GameModel>;
+    var amountOfGames = gameList.Count - 1;
 }
-<div class="align-content-center">
-    <h1>HomePage</h1>
+@*<script src="~/js/ImgGrid.js"></script>*@
+<div class="align-content-center text-center">
+    <div class="header" id="header">
+        <h3>Recent Added Games</h3>
+    </div>
+        <div class="row text-center">
+            @for (int i = amountOfGames; i >= 0; i-=2)
+            {
+            <div class="column">
+                <div class="hoverBox">
+                    <a asp-area="" asp-controller="profile" asp-action="game" asp-route-gameid="@gameList[i].Id"><img class="border-light img" src="~/img/Game/@gameList[i].GameImg" /></a>
+                </div>
+                @if (i > 0)
+                {
+                    <div class="hoverBox">
+                        <a asp-area="" asp-controller="profile" asp-action="game" asp-route-gameid="@gameList[i-1].Id"><img class="border-light img" src="~/img/Game/@gameList[i - 1].GameImg" /></a>
+                    </div>
+                }
+
+            </div>
+            }
+
+        </div>
+        <a class="btn m-5" asp-area="" asp-controller="library" asp-action="index">Show More</a>
 </div>

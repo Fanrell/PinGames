@@ -61,7 +61,6 @@ namespace PinGames.Controllers
             return View();
         }
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> AddGame(GameToUpload model)
         {
             string imgName = await UploadGameCover(_webHost, model);
