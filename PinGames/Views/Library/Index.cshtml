@@ -1,19 +1,22 @@
-﻿@model IEnumerable<PinGames.Models.GameLibraryModel>
-<h1>Library</h1>
+﻿<h1>Library</h1>
 <div>
     @{
         var gameLibrary = ViewData["gameLibrary"] as List<GameLibraryModel>;
-        var msg = ViewData["msg"] as string;
-        }
-    @if(msg != null)
+        var session = Context.Request.Cookies["UserLoginCookie"];
+        var genres = ViewData["Genres"] as List<GenreModel>;
+     }
+    <form method="get" action="Library" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Search" />
+        <label for="genres">Choose a genre</label>
+        <select id="genres" name="genre">
+            <option value="">-</option>
+            @foreach (var item in genres)
             {
-                <div>
-                    <p>@msg</p>
-                </div>
+                <option value="@item.Id">@item.GenreName</option>
             }
-    <form>
-        <input type="text" placeholder="Search" />
+        </select>
         <button type="submit" class="btn-sm btn btn-dark">Confirm</button>
+
     </form>
     <table class="table">
         <tr class="">
@@ -28,10 +31,10 @@
         {
             <tr>
                 <td><img src="~/img/Game/@item.GameImg" class="w-50 h-50"> </td>
-                <td><a class="text-dark" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.GameId">@item.GameName</a></td>
+                <td><b><a class="text-dark" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.GameId">@item.GameName</a></b></td>
                 <td>@item.GenreName</td>
                 <td>@item.GameAbout.Substring(0, 200)</td>
-                @if (Context.Session.GetString("LoginSession") != null)
+                @if (session != null)
                 {
                     <td><a class="btn btn-success text-center" style="border-radius:45%;" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@item.GameId">&#43</a></td>
                 }

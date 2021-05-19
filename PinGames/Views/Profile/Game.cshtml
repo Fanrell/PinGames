@@ -6,7 +6,10 @@
 }
 
 <div class="position-relative">
-    @{ var game = ViewData["game"] as GameViewModel;}
+    @{ 
+        var game = ViewData["game"] as GameViewModel;
+        var session = Context.Request.Cookies["UserLoginCookie"];
+     }
 
     <table>
         <tr>
@@ -20,7 +23,7 @@
             </td>
         </tr>
         <tr>
-            @if (Context.Session.GetString("LoginSession") != null)
+            @if (session != null)
             {
                 <td><a class="btn btn-success" style="border-radius:45%" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@game.GameId">&#43</a></td>
             }
