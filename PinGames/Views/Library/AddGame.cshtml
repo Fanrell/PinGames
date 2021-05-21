@@ -4,20 +4,20 @@
 }
 
 @{ var genres = ViewData["genres"] as List<GenreModel>;}
-
-<div>
-    <form class="align-content-center" method="post" action="AddGame" enctype="multipart/form-data">
-        <p><input type="text" id="name" name="name" placeholder="Game Name" /></p>
+<h2 class="text-center">Add Game to Database</h2>
+<div class="text-center p-5">
+    <form    method="post" action="AddGame" enctype="multipart/form-data">
+        <p><input type="text" class="w-50" id="name" name="name" placeholder="Game Name" /></p>
         <p>
-            <select name="genreId">
+            <select name="genreId" class="w-50">
                 @foreach (var item in genres)
                 {
                     <option value="@item.Id">@item.GenreName</option>
                 }
             </select>
         </p>
+        <p><textarea rows="10" class="w-50" style="resize:none" id="about" name="about" placeholder="About Game" /></textarea></p>
         <p><input name="GameImg" type="file" accept="image/*" /></p>
-        <p><textarea rows="10" cols="40" id="about" name="about" placeholder="About Game" /></textarea></p>
         <input class="btn btn-info btn-primary" type="submit" value="Submit" />
     </form>
 </div>

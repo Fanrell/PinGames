@@ -22,10 +22,10 @@
                 <p class="p-1">@game.GameAbout</p>
             </td>
         </tr>
-        <tr>
+        <tr class="text-center">
             @if (session != null)
             {
-                <td><a class="btn btn-success" style="border-radius:45%" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@game.GameId">&#43</a></td>
+                <td><a class="btn btn-success m-3 w-25" style="border-radius:30%" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@game.GameId">&#43</a></td>
             }
         </tr>
     </table>
@@ -38,7 +38,7 @@
         @foreach(var item in game.Review)
             {
                <tr class="border-bottom">
-                   <td class="col-1">@item.userName</td>
+                   <td class="col-1"><b><a style="color:black" asp-controller="profile" asp-action="index" asp-route-login="@item.userName">@item.userName</a></b></td>
                    <td>@item.review</td>
                </tr>
             }

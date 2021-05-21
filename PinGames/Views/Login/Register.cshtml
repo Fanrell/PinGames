@@ -1,15 +1,15 @@
 ﻿@model PinGames.Models.RegisterUserModel
-<div class="align-content-center">
+<div class="">
     <script src="~/js/RegisterFormCheck.js"></script>
-    <div class="align-bottom">
-        <form method="post" , enctype="multipart/form-data">
+    <div class="align-bottom text-center">
+        <form method="post" enctype="multipart/form-data">
             <p><input id="login" name="login" type="text" placeholder="Login" /></p>
             <p><input name="email" type="email" placeholder="E-mail" /></p>
             <p><input id="password" name="password" type="password" placeholder="Password" /></p> @*Re2fxY3TtvsL5kd*@
             <p><input id="repeatedPassword" name="repeatedPassword" type="password" placeholder="Repeat Password" onblur="FromValidation()" /></p>
             <p id="errorMessage" style="color:red"></p>
             <p>
-                <input id="submit" type="submit" value="Register" disabled class="btn btn-primary btn-light p-2 align-content-end" onclick="window.location.href = '@Url.Action("RegisterAction","Home")';" />
+                <input id="submit" type="submit" value="Register" disabled class="btn btn-primary btn-light p-2 align-content-end" asp-controller="Login" asp-action="Register"/>
             </p>
         </form>
     </div>

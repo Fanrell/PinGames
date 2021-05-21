@@ -1,13 +1,14 @@
 ﻿@model PinGames.Models.UserLoginModel
-<div class="align-content-center">
-    <div class="align-bottom">
-        <form method="post">
+<div class="align-center text-center">
+    <h2 >Login</h2>
+    <div class="p-5">
+        <form method="post" enctype="multipart/form-data">
             <p><input name="login" type="text" placeholder="Login" /></p>
             <p><input name="password" type="password" placeholder="Password" /></p>
             <p><input id="rememberLogin" name="rememberLogin" type="checkbox" value="true" />Remember login</p>
             <p>
                 <input type="submit" value="Login" class="btn btn-primary btn-dark p-2" asp-area="" asp-action="Login" asp-controller="Login" />
-                <input type="button" value="Register" class="btn btn-secondary btn-light p-2" onclick="window.location.href = '@Url.Action("RegisterAction","Home")';" />
+                <a class="btn btn-secondary btn-light p-2" asp-area="" asp-controller="Login" asp-action="Register">Register</a>
             </p>
             <p>
                 <a href="">Login Problem</a>

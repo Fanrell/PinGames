@@ -58,38 +58,6 @@ namespace PinGames.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult RegisterAction()
-        {
-            return View("Register");
-        }
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        /*
-         * To Do:
-         *  -Password without banned charactes
-         */
-        public async Task<IActionResult> RegisterAction(RegisterUserModel model)
-        {
-            var anotherUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == model.Login || x.Email == model.Email);
-            if (anotherUser == null)
-            {
-                UserAccountModel newUser = new UserAccountModel {
-                    Id = Math.Abs(Guid.NewGuid().GetHashCode()),
-                    UserName = model.Login,
-                    Password = Convert.ToBase64String(
-                        System.Text.Encoding.UTF8.GetBytes(model.Password)
-                        ),
-                    Email = model.Email,
-                    AdminPrivilage = model.AdminPrivilage ?? false
-                };
-
-                await _db.AddAsync<UserAccountModel>(newUser);
-                await _db.SaveChangesAsync();
-                return View("Login");
-            }
-            return View("Privacy");
-            
-        }
 
     }
 }

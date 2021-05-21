@@ -59,5 +59,38 @@ namespace PinGames.Controllers
             await HttpContext.SignOutAsync();
             return RedirectToAction(controllerName: "Home", actionName: "Index");
         }
+
+        public IActionResult Register()
+        {
+            return View("Register");
+        }
+        [HttpPost]
+        /*
+         * To Do:
+         *  -Password without banned charactes
+         */
+        public async Task<IActionResult> Register(RegisterUserModel model)
+        {
+            var anotherUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == model.Login || x.Email == model.Email);
+            if (anotherUser == null)
+            {
+                UserAccountModel newUser = new UserAccountModel
+                {
+                    Id = Math.Abs(Guid.NewGuid().GetHashCode()),
+                    UserName = model.Login,
+                    Password = Convert.ToBase64String(
+                        System.Text.Encoding.UTF8.GetBytes(model.Password)
+                        ),
+                    Email = model.Email,
+                    AdminPrivilage = model.AdminPrivilage ?? false
+                };
+
+                await _db.AddAsync(newUser);
+                await _db.SaveChangesAsync();
+                return View("index");
+            }
+            return View("Register");
+
+        }
     }
 }
