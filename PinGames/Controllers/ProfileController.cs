@@ -137,5 +137,45 @@ namespace PinGames.Controllers
             }
             return RedirectToActionPermanent("index", new { login = dataFromDb.UserName });
         }
+
+        public async Task<IActionResult> Review(int gameId)
+        {
+            var game = await (
+                from lib in _db.Libraries
+                where lib.GameId == gameId
+                join games in _db.Games on lib.GameId equals games.Id
+                select new LibraryModel
+                {
+                    Id = lib.Id,
+                    UserId = lib.UserId,
+                    GameId = lib.GameId,
+                    Game = games,
+                    Review = lib.Review
+                }
+                ).AsNoTracking().FirstOrDefaultAsync();
+
+            ViewData["game"] = game;
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Review(int userId, int gameId, LibraryModel model)
+        {
+            var user = await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var rev = await (
+                from lib in _db.Libraries
+                where lib.UserId == user.Id && lib.GameId == gameId
+                select new LibraryModel
+                {
+                    Id = lib.Id,
+                    UserId = lib.UserId,
+                    GameId = lib.GameId,
+                    Review = model.Review
+                }
+                ).AsNoTracking().FirstOrDefaultAsync();
+            _db.Update(rev);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("index", new { login = user.UserName});
+        }
     }
 }

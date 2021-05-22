@@ -1,0 +1,15 @@
+﻿@{ 
+    var item = ViewData["game"] as LibraryModel;
+    ViewData["Title"] = @item.Game.Name + " Review";
+}
+
+<div class="text-center">
+    <h2>@item.Game.Name Review</h2>
+    <p>@item.Game.About</p>
+    
+    <form method="post" enctype="multipart/form-data">
+        <input name="userId" type="text" disabled hidden value="@item.UserId" placeholder="@item.UserId"/>
+        <textarea name="review" class="w-50" rows="20" style="resize:none;">@item.Review</textarea>
+        <p><input class="btn btn-dark m-3" type="submit" value="Submit" /></p>
+    </form>
+</div>

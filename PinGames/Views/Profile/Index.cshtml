@@ -59,7 +59,7 @@
                                         @item.gameReview
                             </span>
                             <span id="dots">
-                                ... <a href=".">Edit</a>
+                                ... <a asp-area="" asp-controller="profile" asp-action="review" asp-route-userId="@profile.UserId" asp-route-gameId="@item.gameId">Edit</a>
                             </span>
                         </td>
                     </tr>
