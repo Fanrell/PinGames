@@ -58,9 +58,15 @@
                                     else
                                         @item.gameReview
                             </span>
-                            <span id="dots">
-                                ... <a asp-area="" asp-controller="profile" asp-action="review" asp-route-userId="@profile.UserId" asp-route-gameId="@item.gameId">Edit</a>
-                            </span>
+                            @if (Context.User.Identity.Name == profile.UserName)
+                            {
+                                <span id="dots">
+
+                                    ...<a asp-area="" asp-controller="profile" asp-action="review" asp-route-userId="@profile.UserId" asp-route-gameId="@item.gameId"> Edit </a>
+
+                                </span>
+                             }
+
                         </td>
                     </tr>
                 }

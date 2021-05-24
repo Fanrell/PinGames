@@ -12,6 +12,7 @@
     @{ 
         var session = Context.Request.Cookies["UserLoginCookie"];
         var user = Context.User.Identity.Name;
+        var role = Context.User.IsInRole("Admin");
         }
     <header>
         <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -31,10 +32,13 @@
                                 <li>
                                     <a id="Find Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="Index">Find Game</a>
                                 </li>
+                                @if (role)
+                                {
                                     <li class="dropdown-divider"></li>
                                     <li>
                                         <a id="Add Game" class="dropdown-item text-dark" asp-area="" asp-controller="Library" asp-action="AddGame">Add Game</a>
                                     </li>
+                                }
                                 </ul>
                             </li>
 
@@ -52,6 +56,9 @@
                                             <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="" asp-action="">Library</a>
                                         </li>
                                         <li class="dropdown-divider"></li>
+                                        <li>
+                                            <a id="Library" class="dropdown-item text-dark" asp-area="" asp-controller="profile" asp-action="changePassword">Change Password</a>
+                                        </li>
                                         <li>
                                             <a id="logout" class="text-danger dropdown-item" asp-area="" asp-controller="Login" asp-action="LogOut">Logout</a>
                                         </li>

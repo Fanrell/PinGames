@@ -9,7 +9,9 @@ using PinGames.Models;
 using PinGames.Data;
 using static PinGames.Static.SessionController;
 using static PinGames.Static.UploadFile;
+using static PinGames.Static.Base64;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PinGames.Controllers
 {
@@ -137,7 +139,7 @@ namespace PinGames.Controllers
             }
             return RedirectToActionPermanent("index", new { login = dataFromDb.UserName });
         }
-
+        [HttpGet]
         public async Task<IActionResult> Review(int gameId)
         {
             var game = await (
@@ -176,6 +178,31 @@ namespace PinGames.Controllers
             _db.Update(rev);
             await _db.SaveChangesAsync();
             return RedirectToAction("index", new { login = user.UserName});
+        }
+        
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(PasswordChangeModel model)
+        {
+            var user = await _db.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).AsNoTracking().FirstOrDefaultAsync();
+            if (user != null)
+            {
+                if (model.NewPassword == model.RePassword)
+                {
+                    user.Password = Encode(model.NewPassword);
+                    _db.Update(user);
+                    await _db.SaveChangesAsync();
+                    return RedirectToAction(actionName: "index", new { login = user.UserName });
+                }
+                return View();
+            }
+            return RedirectToAction(controllerName: "home", actionName: "index");
         }
     }
 }
