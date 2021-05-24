@@ -13,6 +13,7 @@ using static PinGames.Static.SessionController;
 using static PinGames.Static.Base64;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using System.Net;
 
 namespace PinGames.Controllers
 {
@@ -20,10 +21,12 @@ namespace PinGames.Controllers
     {
         private readonly ILogger<LoginController> _logger;
         private readonly ApplicationDbContext _db;
-        public LoginController(ILogger<LoginController> logger, ApplicationDbContext db)
+        private readonly EmailConfiguration _email;
+        public LoginController(ILogger<LoginController> logger, ApplicationDbContext db, EmailConfiguration email)
         {
             _logger = logger;
             _db = db;
+            _email = email;
         }
         public IActionResult Index()
         {
@@ -48,10 +51,10 @@ namespace PinGames.Controllers
                 await HttpContext.SignInAsync(userPrincipal);
                 HttpContext.User = userPrincipal;
                 return RedirectToAction("index", "profile", new { login = existingUser.UserName });
-                
+
             }
             else
-                return RedirectToAction(actionName: "Index", controllerName:"Login");
+                return RedirectToAction(actionName: "Index", controllerName: "Login");
         }
 
         public async Task<IActionResult> LogOut()
@@ -91,6 +94,53 @@ namespace PinGames.Controllers
             }
             return View("Register");
 
+        }
+
+        public IActionResult LoginProblem()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> LoginProblem(UserAccountModel model)
+        {
+            var user = await _db.Users.Where(u => u.Email == model.Email).AsNoTracking().FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                if (!SendMail(model.Email, user.Id))
+                    return RedirectToAction(controllerName: "home", actionName: "index");
+            }
+
+            return RedirectToAction(controllerName: "home", actionName: "index");
+        }
+
+        private bool SendMail(string userEmail, int userId)
+        {
+            bool succseed = false;
+            using(var mail = new System.Net.Mail.MailMessage())
+            {
+                mail.From = new System.Net.Mail.MailAddress(_email.Email, "PinGames");
+                mail.Subject = "Forgotten Password";
+                mail.Body =
+                    (
+                        "This is messege from PinGames service. You Probably forgot your password.\n"
+                        +$@"Please go to this page: {_email.PageForRestorePassword}?restorePassword={Encode(userId.ToString())}"
+                    );
+                mail.To.Add(userEmail);
+
+                using (var smtp = new System.Net.Mail.SmtpClient(_email.SmtpServer, _email.Port))
+                {
+                    smtp.EnableSsl = true;
+                    smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(_email.Email, _email.Password);
+                    ServicePointManager.ServerCertificateValidationCallback =
+                        (sender, certificate, chain, sslPolicyError) => true;
+                    smtp.Send(mail);
+                    succseed = true;
+                }
+            }
+            return succseed;
         }
     }
 }

@@ -1,0 +1,9 @@
+﻿@model PasswordChangeModel
+@{ var rest = ViewData["rest"] as string;}
+
+<h5>Restore Password</h5>
+<form method="post" enctype="multipart/form-data">
+    <input type="password" name="newPassword" />
+    <input type="password" name="rePassword"/>
+    <input type="submit" />
+</form>

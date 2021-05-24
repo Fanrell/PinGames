@@ -30,14 +30,6 @@ namespace PinGames.Controllers
             _logger = logger;
             _db = db;
         }
-        public IActionResult Login()
-        {
-            if (SessionExists(HttpContext, "LoginSession"))
-            {
-                return RedirectToRoute("Profile", new { userName = ReadUserNameFromSession(HttpContext, "LoginSession") });
-            }
-            return View();
-        }
 
         public async Task<IActionResult> Index()
         {
