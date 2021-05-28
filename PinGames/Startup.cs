@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using PinGames.Data;
 using PinGames.Models;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace PinGames
 {
@@ -30,9 +30,8 @@ namespace PinGames
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
-            services.AddSession();
-            services.AddAuthentication("CookieAuthentication")
-                .AddCookie("CookieAuthentication", config =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(config =>
                 {
                     config.Cookie.Name = "UserLoginCookie";
                     config.LoginPath = "/Login";
@@ -68,10 +67,13 @@ namespace PinGames
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSession();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Unspecified
+            });
 
             
 

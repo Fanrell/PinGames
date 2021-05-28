@@ -1,0 +1,24 @@
+﻿@import "../lib/bootstrap/";
+.pagination li {
+    width: 20px;
+    text-align: center;
+    margin-top: 10px;
+    margin-left: 2px;
+    padding: 5px;
+    color: lightslategray;
+    background-color: #0a2336;
+    filter: drop-shadow(0 0 1px #0a2336);
+    border-radius: 10%;
+    transition: ease 0.5s;
+}
+
+.pagination li:hover {
+    width: 25px;
+    height: auto;
+    background-color: #12354e;
+    filter: drop-shadow(0 0 5px #0a2336);
+}
+
+.pagination a {
+    color: white;
+}

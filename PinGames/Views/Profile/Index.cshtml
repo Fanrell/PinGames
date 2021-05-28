@@ -1,5 +1,6 @@
-﻿@using PinGames.Data
-@using PinGames.Models
+﻿@using PinGames.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<gamesProfile>
 
 @{
     ViewData["Title"] = "Profile";
@@ -11,8 +12,7 @@
         var session = Context.Request.Cookies["UserLoginCookie"];
         var user = Context.User.Identity.Name;
     }
-    @if (session != null)
-    {
+
         <table style="margin-bottom: 10px">
             <tr>
 
@@ -40,7 +40,7 @@
                     <td class="w-50"><h5>About</h5></td>
                     <td class="w-50"><h5>Review</h5></td>
                 </tr>
-                @foreach (var item in profile.gameProfiles)
+                @foreach (var item in Model)
                 {
                     <tr class="border-bottom">
                         <td class=""><img src="~/img/Game/@item.GameImg" class="w-50 h-auto"> </td>
@@ -65,15 +65,16 @@
                                     ...<a asp-area="" asp-controller="profile" asp-action="review" asp-route-userId="@profile.UserId" asp-route-gameId="@item.gameId"> Edit </a>
 
                                 </span>
-                             }
+                            }
 
                         </td>
                     </tr>
                 }
             </table>
+            <br />
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, login = profile.UserName }))
         </div>
-    }
 </div>
 <div class="position-relative m-3 ">
-   
+
 </div>

@@ -12,6 +12,7 @@ using static PinGames.Static.UploadFile;
 using static PinGames.Static.Base64;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 namespace PinGames.Controllers
 {
@@ -28,8 +29,10 @@ namespace PinGames.Controllers
             _webHost = webHost;
         }
         [HttpGet] // zabezpieczuć bo error bez id
-        public async Task<IActionResult> Index(string login)
+        public async Task<IActionResult> Index(string login, int? page)
         {
+            int pageNumber = page ?? 1;
+            int pageSize = 3;
 
             var userDb = await
                 (
@@ -59,13 +62,12 @@ namespace PinGames.Controllers
                 GameImg = game.GameImg
             }
             ).ToListAsync();
-            userDb.gameProfiles = games;
 
 
             ViewData["userProfile"] = userDb;
 
 
-            return View();
+            return View(games.ToPagedList(pageNumber, pageSize));
         }
 
         [HttpGet]
@@ -103,6 +105,7 @@ namespace PinGames.Controllers
             return View();
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ProfileInfo(string login)
         {
             var user = await
@@ -122,6 +125,7 @@ namespace PinGames.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ProfileInfo(ProfileInfoModel model)
         {
             var login = HttpContext.User.Identity.Name;
@@ -161,6 +165,7 @@ namespace PinGames.Controllers
             return View();
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Review(int userId, int gameId, LibraryModel model)
         {
             var user = await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();

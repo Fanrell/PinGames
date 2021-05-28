@@ -7,13 +7,12 @@ using PinGames.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using static PinGames.Static.SessionController;
 using static PinGames.Static.Base64;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace PinGames.Controllers
 {
@@ -42,14 +41,20 @@ namespace PinGames.Controllers
                 var userClaim = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, existingUser.UserName),
+                    new Claim("FullName", existingUser.UserName),
                     new Claim(ClaimTypes.Sid, existingUser.Id.ToString())
                 };
                 if (existingUser.AdminPrivilage)
                     userClaim.Add(new Claim(ClaimTypes.Role, "Admin"));
-                var userIdentity = new ClaimsIdentity(userClaim, "UserIdentity");
+                var userIdentity = new ClaimsIdentity(userClaim, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = model.RememberLogin
+                };
                 var userPrincipal = new ClaimsPrincipal(userIdentity);
-                await HttpContext.SignInAsync(userPrincipal);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
                 HttpContext.User = userPrincipal;
+                _logger.LogInformation("Succseed login");
                 return RedirectToAction("index", "profile", new { login = existingUser.UserName });
 
             }
@@ -59,7 +64,9 @@ namespace PinGames.Controllers
 
         public async Task<IActionResult> LogOut()
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme
+                );
             return RedirectToAction(controllerName: "Home", actionName: "Index");
         }
 

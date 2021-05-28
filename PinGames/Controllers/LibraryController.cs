@@ -11,6 +11,7 @@ using static PinGames.Static.UploadFile;
 using Microsoft.AspNetCore.Hosting;
 using static PinGames.Static.SessionController;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 namespace PinGames.Controllers
 {
@@ -27,24 +28,25 @@ namespace PinGames.Controllers
             _webHost = webHost;
         }
         [HttpGet]
-        public async Task<IActionResult>Index(string name, int? genre)
+        public async Task<IActionResult>Index(string name, int? genre, int? page)
         {
+            int pageNumber = page ?? 1;
+            int pageSize = 5;
+            List<GameModel> games = new List<GameModel>();
             var genres = await _db.Genres.ToListAsync();
             ViewData["Genres"] = genres;
 
             if (name == null && genre == null)
-                await _IndexNoFilter();
+                games = await _IndexNoFilter();
 
             else if (name != null && genre == null)
-                await _IndexNameFilter(name);
+                games = await _IndexNameFilter(name);
             else if (name == null && genre != null)
-                await _IndexGenreFilter(genre);
+                games = await _IndexGenreFilter(genre);
             else
-            {
-                await _IndexFullFilter(name, genre);
-            }
+                games = await _IndexFullFilter(name, genre);
 
-            return View();
+            return View(games.ToPagedList(pageNumber, pageSize));
         }
         [Authorize]
         public async Task<IActionResult> AddGame()
@@ -113,65 +115,65 @@ namespace PinGames.Controllers
             return RedirectToAction("Index");
         }
 
-        private async Task _IndexNoFilter()
+        private async Task<List<GameModel>> _IndexNoFilter()
         {
             var gameLibraries = await (
                 from game in _db.Games
                 join genre in _db.Genres on game.GenreId equals genre.Id
-                select new GameLibraryModel
+                select new GameModel
                 {
-                    GameId = game.Id,
-                    GameName = game.Name,
+                    Id = game.Id,
+                    Name = game.Name,
                     GameImg = game.GameImg,
-                    GameAbout = game.About,
-                    GenreName = genre.GenreName
+                    About = game.About,
+                    Genre = genre
                 }
                 ).AsNoTracking().ToListAsync();
 
-            ViewData["gameLibrary"] = gameLibraries;
+            return gameLibraries;
         }
 
-        private async Task _IndexNameFilter(string name)
+        private async Task<List<GameModel>> _IndexNameFilter(string name)
         {
             var gameLibraries = await
             (
                 from game in _db.Games
                 where game.Name.ToLower().Contains(name.ToLower())
                 join genr in _db.Genres on game.GenreId equals genr.Id
-                select new GameLibraryModel
+                select new GameModel
                 {
-                    GameId = game.Id,
-                    GameName = game.Name,
+                    Id = game.Id,
+                    Name = game.Name,
                     GameImg = game.GameImg,
-                    GameAbout = game.About,
-                    GenreName = genr.GenreName
+                    About = game.About,
+                    Genre = genr
                 }
             ).AsNoTracking().ToListAsync();
 
-            ViewData["gameLibrary"] = gameLibraries;
+            return gameLibraries;
         }
 
-        private async Task _IndexGenreFilter(int? genre)
+        private async Task<List<GameModel>> _IndexGenreFilter(int? genre)
         {
             var gameLibraries = await
             (
                 from game in _db.Games
                 where game.GenreId == genre
                 join genr in _db.Genres on game.GenreId equals genr.Id
-                select new GameLibraryModel
+                select new GameModel
                 {
-                    GameId = game.Id,
-                    GameName = game.Name,
+                    Id = game.Id,
+                    Name = game.Name,
                     GameImg = game.GameImg,
-                    GameAbout = game.About,
-                    GenreName = genr.GenreName
+                    About = game.About,
+                    Genre = genr
                 }
             ).AsNoTracking().ToListAsync();
 
-            ViewData["gameLibrary"] = gameLibraries;
+            return gameLibraries;
         }
 
-        private async Task _IndexFullFilter(string name, int? genre)
+        private async Task<List<GameModel>> _IndexFullFilter(string name, int? genre)
         {
             var gameLibraries = await
             (
@@ -179,17 +181,17 @@ namespace PinGames.Controllers
                 where game.GenreId == genre
                 where game.Name.ToLower().Contains(name.ToLower())
                 join genr in _db.Genres on game.GenreId equals genr.Id
-                select new GameLibraryModel
+                select new GameModel
                 {
-                    GameId = game.Id,
-                    GameName = game.Name,
+                    Id = game.Id,
+                    Name = game.Name,
                     GameImg = game.GameImg,
-                    GameAbout = game.About,
-                    GenreName = genr.GenreName
+                    About = game.About,
+                    Genre = genr
                 }
             ).AsNoTracking().ToListAsync();
 
-            ViewData["gameLibrary"] = gameLibraries;
+            return gameLibraries;
         }
     }
 }
