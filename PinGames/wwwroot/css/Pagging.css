@@ -23,7 +23,12 @@
     color: white;
 }
 
-.pagination ul {
-    text-align: center;
-    align-items: center;
+.cover {
+    width: 150px;
+    transition: ease 1s;
+}
+
+.cover :hover {
+    width: 250px;
+    height: auto;
 }

@@ -35,7 +35,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td><img src="~/img/Game/@item.GameImg" class="w-50 h-50"> </td>
+                <td class="cover"><img src="~/img/Game/@item.GameImg" class="cover"> </td>
                 <td><b><a class="" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.Id"><u>@item.Name</u></a></b></td>
                 <td>@item.Genre.GenreName</td>
                 @if(@item.About.Length >= 200)

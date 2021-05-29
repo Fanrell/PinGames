@@ -36,6 +36,11 @@ namespace PinGames.Controllers
             var games = await _db.Games
                 .OrderByDescending(g => g.Id)
                 .Take(8).AsNoTracking().ToListAsync();
+            foreach(var item in games)
+            {
+                if(item.GameImg == null)
+                    item.GameImg = "default.jpg";
+            }
             ViewData["gameList"] = games;
             return View();
         }

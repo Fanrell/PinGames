@@ -35,7 +35,7 @@
         <div>
             <table class="table" style="width:100%">
                 <tr class="">
-                    <td class="w-50"><h5>Cover</h5></td>
+                    <td class="w-25"><h5>Cover</h5></td>
                     <td><h5>Name</h5></td>
                     <td class="w-50"><h5>About</h5></td>
                     <td class="w-50"><h5>Review</h5></td>
@@ -43,8 +43,8 @@
                 @foreach (var item in Model)
                 {
                     <tr class="border-bottom">
-                        <td class=""><img src="~/img/Game/@item.GameImg" class="w-50 h-auto"> </td>
-                        <td><a asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.gameId" class=""><b><u>@item.gameName</u></b></a></td>
+                        <td class="cover"><img src="~/img/Game/@item.GameImg" class="cover"> </td>
+                        <td><a  asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.gameId" class=""><b><u>@item.gameName</u></b></a></td>
                         <td>
                             <span>
                                 @if(item.gameAbout.Length >= 200)
