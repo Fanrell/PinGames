@@ -44,11 +44,20 @@
                 {
                     <tr class="border-bottom">
                         <td class=""><img src="~/img/Game/@item.GameImg" class="w-50 h-auto"> </td>
-                        <td>@item.gameName</td>
+                        <td><a asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.gameId" class=""><b><u>@item.gameName</u></b></a></td>
                         <td>
-                            <span>@item.gameAbout.Substring(0, 200)</span>
+                            <span>
+                                @if(item.gameAbout.Length >= 200)
+                                {
+                                    @item.gameAbout.Substring(0, 200)
+                                }
+                                else
+                                {
+                                    @item.gameAbout
+                                }
+                                </span>
                             <span id="dots">
-                                ... <a asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.gameId">More</a>
+                                ...
                             </span>
                         </td>
                         <td class="col-auto">
@@ -67,6 +76,9 @@
                                 </span>
                             }
 
+                        </td>
+                        <td class="w-3 align-center text-center">
+                            <a style="border-radius: 20%;" class="btn btn-danger text-white" asp-controller="profile" asp-action="DeleteFromLibrary" asp-route-gameId="@item.gameId"> <i class='far fa-trash-alt'></i> </a>
                         </td>
                     </tr>
                 }

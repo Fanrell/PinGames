@@ -22,3 +22,8 @@
 .pagination a {
     color: white;
 }
+
+.pagination ul {
+    text-align: center;
+    align-items: center;
+}

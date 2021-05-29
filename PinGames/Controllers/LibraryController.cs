@@ -49,8 +49,26 @@ namespace PinGames.Controllers
             return View(games.ToPagedList(pageNumber, pageSize));
         }
         [Authorize]
-        public async Task<IActionResult> AddGame()
+        public async Task<IActionResult> AddGame(int? gameId)
         {
+            GameToUpload game = new GameToUpload();
+
+            if(gameId != null)
+            {
+                game = await
+                (
+                    from games in _db.Games
+                    where games.Id == gameId
+                    select new GameToUpload
+                    {
+                        Id = games.Id,
+                        Name = games.Name,
+                        About = games.About,
+                        GenreId = games.GenreId
+                    }
+                ).AsNoTracking().FirstOrDefaultAsync();
+            }
+
             var genres = await
                 (
                 from genre in _db.Genres
@@ -61,24 +79,41 @@ namespace PinGames.Controllers
                 }
                 ).AsNoTracking().ToListAsync();
             ViewData["genres"] = genres;
-            return View();
+            return View(game);
         }
         [HttpPost]
         public async Task<IActionResult> AddGame(GameToUpload model)
         {
             string imgName = await UploadGameCover(_webHost, model);
+            var gameInDb = await _db.Games.Where(g => g.Id == model.Id).AsNoTracking().FirstOrDefaultAsync();
             var gameToDb = new GameModel
             {
+                
                 Name = model.Name,
                 GameImg = imgName,
                 GenreId = model.GenreId,
                 About = model.About
 
             };
-            await _db.Games.AddAsync(gameToDb);
+            
+            if(gameInDb == null)
+                await _db.Games.AddAsync(gameToDb);
+            else
+            {
+                gameToDb.Id = gameInDb.Id;
+                _db.Update(gameToDb);
+            }
             await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> DeleteGame(int? gameId)
+        {
+            var gameInDb = await _db.Games.Where(g => g.Id == gameId).AsNoTracking().FirstOrDefaultAsync();
+            _db.Remove(gameInDb);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> GameToLibrary(int gameId)
         {
@@ -124,7 +159,7 @@ namespace PinGames.Controllers
                 {
                     Id = game.Id,
                     Name = game.Name,
-                    GameImg = game.GameImg,
+                    GameImg = game.GameImg ?? "default.jpg",
                     About = game.About,
                     Genre = genre
                 }
@@ -144,7 +179,7 @@ namespace PinGames.Controllers
                 {
                     Id = game.Id,
                     Name = game.Name,
-                    GameImg = game.GameImg,
+                    GameImg = game.GameImg ?? "default.jpg",
                     About = game.About,
                     Genre = genr
                 }
@@ -164,7 +199,7 @@ namespace PinGames.Controllers
                 {
                     Id = game.Id,
                     Name = game.Name,
-                    GameImg = game.GameImg,
+                    GameImg = game.GameImg ?? "default.jpg",
                     About = game.About,
                     Genre = genr
                 }
@@ -185,7 +220,7 @@ namespace PinGames.Controllers
                 {
                     Id = game.Id,
                     Name = game.Name,
-                    GameImg = game.GameImg,
+                    GameImg = game.GameImg ?? "default.jpg",
                     About = game.About,
                     Genre = genr
                 }

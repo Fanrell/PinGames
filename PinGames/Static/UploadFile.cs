@@ -18,7 +18,7 @@ namespace PinGames.Static
             string imgName = null;
             if(model.GameImg != null)
             {
-                imgName = Guid.NewGuid().ToString() + "_" + model.GameImg.FileName;
+                imgName = Guid.NewGuid().ToString() + "_" + model.Name.Replace(" ","_") + "." + model.GameImg.FileName.Split(".")[1];
                 var filePath = Path.Combine(webHost.WebRootPath, "img", "Game", imgName);
                 using(var fileStream = new FileStream(filePath, FileMode.Create))
                 {

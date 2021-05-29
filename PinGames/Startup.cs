@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,14 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using PinGames.Data;
 using PinGames.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Serilog.Extensions.Logging.File;
 
 namespace PinGames
 {
@@ -35,7 +36,7 @@ namespace PinGames
                 {
                     config.Cookie.Name = "UserLoginCookie";
                     config.LoginPath = "/Login";
-                    config.AccessDeniedPath = "/Library";
+                    config.AccessDeniedPath = "/Home";
                 });
             services.AddMvc();
             services.AddDistributedMemoryCache();
@@ -53,8 +54,9 @@ namespace PinGames
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddFile("~/Logs/logs--{Date}.txt");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,7 +76,7 @@ namespace PinGames
             {
                 MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Unspecified
             });
-
+            app.UseStatusCodePages();
             
 
             app.UseEndpoints(endpoints =>

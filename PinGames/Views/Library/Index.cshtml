@@ -1,6 +1,8 @@
 ﻿@model X.PagedList.IPagedList<GameModel>
 @using X.PagedList.Mvc.Core
-
+@{
+    ViewData["Title"] = "Game List";
+}
 <h1>Library</h1>
 <div>
     @{
@@ -18,7 +20,7 @@
                 <option value="@item.Id">@item.GenreName</option>
             }
         </select>
-        <button type="submit" class="btn-sm btn btn-dark">Confirm</button>
+        <button type="submit" class="btn-sm btn-dark">Confirm</button>
 
     </form>
     <table class="table">
@@ -34,12 +36,24 @@
         {
             <tr>
                 <td><img src="~/img/Game/@item.GameImg" class="w-50 h-50"> </td>
-                <td><b><a class="text-dark" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.Id">@item.Name</a></b></td>
+                <td><b><a class="" asp-controller="Profile" asp-action="Game" asp-route-gameId="@item.Id"><u>@item.Name</u></a></b></td>
                 <td>@item.Genre.GenreName</td>
-                <td>@item.About.Substring(0, 200)</td>
+                @if(@item.About.Length >= 200)
+                {
+                    <td>@item.About.Substring(0, 200)</td>
+                }
+                else
+                {
+                    <td>@item.About</td>
+                }
                 @if (session != null)
                 {
-                    <td><a class="btn btn-success text-center" style="border-radius:45%;" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@item.Id">&#43</a></td>
+                    <td><a type="button" class="btn btn-success text-center" style="border-radius:20%;" asp-area="" asp-controller="library" asp-action="GameToLibrary" asp-route-gameId="@item.Id"> <i class="fa fa-save"></i> </a></td>
+                    @if(Context.User.IsInRole("Admin"))
+                    {
+                        <td><a type="button" class="btn text-center icon-edit" style="border-radius:20%; background-color: #e8c301;" asp-area="" asp-controller="library" asp-action="AddGame" asp-route-gameId="@item.Id"><i class='far fa-edit'></i></a></td>
+                        <td><a type="button" class="btn btn-danger text-center icon-edit" style="border-radius:20%;" asp-area="" asp-controller="library" asp-action="DeleteGame" asp-route-gameId="@item.Id"><i class='far fa-trash-alt'></i></a></td>
+                    }
                 }
             </tr>
         }

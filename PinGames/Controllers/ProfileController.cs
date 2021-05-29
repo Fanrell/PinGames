@@ -22,9 +22,9 @@ namespace PinGames.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _webHost;
         public LibraryModel library = new LibraryModel();
-        public ProfileController(ILogger<ProfileController> logger, ApplicationDbContext db, IWebHostEnvironment webHost)
+        public ProfileController(ILoggerFactory logger, ApplicationDbContext db, IWebHostEnvironment webHost)
         {
-            _logger = logger;
+            _logger = logger.CreateLogger<ProfileController>();
             _db = db;
             _webHost = webHost;
         }
@@ -33,36 +33,45 @@ namespace PinGames.Controllers
         {
             int pageNumber = page ?? 1;
             int pageSize = 3;
+            ProfileModel userDb = new ProfileModel();
+            List<gamesProfile> games = new List<gamesProfile>(); 
 
-            var userDb = await
-                (
-                from user in _db.Users
-                where user.UserName == login
-                select new ProfileModel
-                {
-                    UserId = user.Id,
-                    UserAbout = user.About,
-                    UserName = user.UserName,
-                    UserImg = user.ImageName ?? "default.png"
-                }
-                ).AsNoTracking().FirstOrDefaultAsync();
-
-            var games = await
-            (
-            from library in _db.Libraries
-            where library.UserId == userDb.UserId
-            join game in _db.Games on library.GameId equals game.Id
-            select new gamesProfile
+            try
             {
-                gameId = game.Id,
-                libId = library.Id,
-                gameName = game.Name,
-                gameAbout = game.About,
-                gameReview = library.Review ?? "",
-                GameImg = game.GameImg
-            }
-            ).ToListAsync();
+                userDb = await
+                    (
+                    from user in _db.Users
+                    where user.UserName == login
+                    select new ProfileModel
+                    {
+                        UserId = user.Id,
+                        UserAbout = user.About,
+                        UserName = user.UserName,
+                        UserImg = user.ImageName ?? "default.png"
+                    }
+                    ).AsNoTracking().FirstOrDefaultAsync();
 
+                games = await
+                    (
+                    from library in _db.Libraries
+                    where library.UserId == userDb.UserId
+                    join game in _db.Games on library.GameId equals game.Id
+                    select new gamesProfile
+                    {
+                        gameId = game.Id,
+                        libId = library.Id,
+                        gameName = game.Name,
+                        gameAbout = game.About,
+                        gameReview = library.Review ?? "",
+                        GameImg = game.GameImg
+                    }
+                    ).ToListAsync();
+            }
+            catch(Exception e)
+            {
+                _logger.LogCritical(e, $"Someone use {login} as login to show profile");
+                return NotFound();
+            }
 
             ViewData["userProfile"] = userDb;
 
@@ -71,36 +80,45 @@ namespace PinGames.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Game(int GameId)
+        public async Task<IActionResult> Game(int? GameId)
         {
-            var rev = await (
-                from library in _db.Libraries
-                where library.GameId == GameId
-                join user in _db.Users on library.UserId equals user.Id
-                select new Reviews
-                {
-                    userName = user.UserName,
-                    review = library.Review
+            GameViewModel gameView = new GameViewModel();
+            try
+            {
+                var rev = await (
+                    from library in _db.Libraries
+                    where library.GameId == GameId
+                    join user in _db.Users on library.UserId equals user.Id
+                    select new Reviews
+                    {
+                        userName = user.UserName,
+                        review = library.Review
 
+                    }
+                    ).ToListAsync();
+                gameView = await (
+                    from game in _db.Games
+                    where game.Id == GameId
+                    join genre in _db.Genres on game.GenreId equals genre.Id
+                    select new GameViewModel
+                    {
+                        GameId = game.Id,
+                        GameName = game.Name,
+                        GameAbout = game.About,
+                        GameImg = game.GameImg ?? "default.jpg", 
+                        GenreName = genre.GenreName,
+                        Review = rev
+                    }
+                    ).AsNoTracking().FirstOrDefaultAsync();
+
+                    if(GameId == null || gameView == null)
+                        throw new NullReferenceException();
                 }
-                ).ToListAsync();
-
-            Console.WriteLine(GameId);
-            var gameView = await (
-                from game in _db.Games
-                where game.Id == GameId
-                join genre in _db.Genres on game.GenreId equals genre.Id
-                select new GameViewModel
-                {
-                    GameId = game.Id,
-                    GameName = game.Name,
-                    GameAbout = game.About,
-                    GameImg = game.GameImg, // po zmianie modelu "GameModel" zmienić na pobranie wartości
-                    GenreName = genre.GenreName,
-                    Review = rev
-                }
-                ).AsNoTracking().FirstOrDefaultAsync();
-
+            catch(Exception e)
+            {
+                _logger.LogCritical(e, $"Someone use {GameId} as gameId to show Profile of game");
+                return NotFound();
+            }
             ViewData["game"] = gameView;
             return View();
         }
@@ -209,5 +227,24 @@ namespace PinGames.Controllers
             }
             return RedirectToAction(controllerName: "home", actionName: "index");
         }
+
+            [Authorize]
+        public async Task<IActionResult> DeleteFromLibrary(int gameId)
+        {
+            try
+            {
+                var game = await _db.Libraries.Where(game => game.GameId == gameId).AsNoTracking().FirstOrDefaultAsync();
+                _db.Libraries.Remove(game);
+                await _db.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                _logger.LogCritical(e, "");
+            }
+
+            return RedirectToAction("Index", new{login = HttpContext.User.Identity.Name});
+        }
     }
+
+
 }

@@ -15,7 +15,6 @@ namespace PinGames.Models
         [Required]
         [MaxLength(60)]
         public string Name { get; set; }
-        [Required]
         public string GameImg { get; set; }
         [Required]
         public int GenreId { get; set; }
